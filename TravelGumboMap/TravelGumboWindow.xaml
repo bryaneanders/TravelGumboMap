@@ -1,0 +1,273 @@
+﻿<Window x:Class="TravelGumboMap.TGMapWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NorthAmericaWindow" Height="700" Width="1100"
+        xmlns:local="clr-namespace:TravelGumboMap"
+        Closing="MapWindow_Closing">
+
+    <Window.InputBindings>
+        <KeyBinding Command="{x:Static local:MenuCommands.BackCommand}"  Key="B" Modifiers="Control" />
+        <KeyBinding Command="{x:Static local:MenuCommands.ExitCommand}"  Key="Q" Modifiers="Control" />
+        <KeyBinding Command="{x:Static local:MenuCommands.HelpCommand}" Key="H" Modifiers="Control" />
+        <KeyBinding Command="{x:Static local:MenuCommands.MapSourcesCommand}"  Key="M" Modifiers="Control" />
+        <KeyBinding Command="{x:Static local:MenuCommands.AboutCommand}" Key="A" Modifiers="Control" />
+        <KeyBinding Command="{x:Static local:MenuCommands.HomepageCommand}" Key="T" Modifiers="Control" />
+    </Window.InputBindings>
+
+    <Grid Name="TravelGumboGrid" Background="Orange">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="58*"/>
+            <RowDefinition Height="251*"/>
+            <RowDefinition Height="54*"/>
+            <RowDefinition Height="221*"/>
+            <RowDefinition Height="60*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="230*"/>
+            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="84*"/>
+        </Grid.ColumnDefinitions>
+
+        <Menu Name="MainMenu" Grid.Row="0" Grid.ColumnSpan="3">
+            <MenuItem Name="FileMenuItem" Header="File">
+                <MenuItem Name="ExitMenuItem" Header="Exit" InputGestureText="Ctrl+Q" Click="ExitButton_Click">
+                    <MenuItem.CommandBindings>
+                        <CommandBinding Command="{x:Static local:MenuCommands.ExitCommand}"/>
+                    </MenuItem.CommandBindings>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Name="MapMenuItem" Header="Map">
+                <MenuItem Name="BackMenuItem" Header="Back" IsEnabled="False" InputGestureText="Ctrl+B" Click="BackButton_Click">
+                    <MenuItem.CommandBindings>
+                        <CommandBinding Command="{x:Static local:MenuCommands.BackCommand}"/>
+                    </MenuItem.CommandBindings>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Name="TGMenuItem" Header="TraveGumbo">
+                <MenuItem Name="HomepageMenuItem" Header="Homepage" InputGestureText="Ctrl+T" Click="HomepageButton_Click">
+                    <MenuItem.CommandBindings>
+                        <CommandBinding Command="{x:Static local:MenuCommands.HomepageCommand}"/>
+                    </MenuItem.CommandBindings>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Name="HelpMenuItemDropdown" Header="Help">
+                <MenuItem Name="HelpMenuItem" Header="Help" InputGestureText="Ctrl+H" Click="HelpButton_Click">
+                    <MenuItem.CommandBindings>
+                        <CommandBinding Command="{x:Static local:MenuCommands.HelpCommand}"/>
+                    </MenuItem.CommandBindings>
+                </MenuItem>
+                <MenuItem Name="MapSourcesMenuItem" Header="Map Sources" InputGestureText="Ctrl+M" Click="MapSourcesButton_Click">
+                    <MenuItem.CommandBindings>
+                        <CommandBinding Command="{x:Static local:MenuCommands.MapSourcesCommand}"/>
+                    </MenuItem.CommandBindings>
+                </MenuItem>
+                <MenuItem Name="AboutMenuItem" Header="About" InputGestureText="Ctrl+A" Click="AboutButton_Click">
+                    <MenuItem.CommandBindings>
+                        <CommandBinding Command="{x:Static local:MenuCommands.AboutCommand}"/>
+                    </MenuItem.CommandBindings>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <ScrollViewer Visibility="Visible" Name="RegionalMenuScrollViewer" Background="White" 
+                          BorderBrush="Orange" BorderThickness="1" CanContentScroll="True" 
+                          Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="1" Grid.RowSpan="6">
+
+            <StackPanel Name="RegionalMenuPanel" Width="250" HorizontalAlignment="Center">
+            </StackPanel>
+        </ScrollViewer>
+
+        <Image HorizontalAlignment="Left" Name="RegionalMap" Visibility="Visible"
+                   Stretch="Fill" VerticalAlignment="Top" />
+        <ScrollViewer Visibility="Hidden" Name="StatesMenuScrollViewer" BorderBrush="Orange" 
+                          CanContentScroll="True" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="1" Grid.RowSpan="6">
+
+            <StackPanel Name="SubregionalMenuPanel" Width="250" HorizontalAlignment="Center">
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer Visibility="Hidden" Name="StateInfoScrollViewer" BorderBrush="Orange" 
+                          BorderThickness="1" CanContentScroll="True" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="1" Grid.RowSpan="6">
+
+            <StackPanel Name="StateStackPanel" Width="250" HorizontalAlignment="Center" Background="White">
+
+                <Label Name="StateNameLabel" Margin="0, 10"  FontSize="28" HorizontalAlignment="Center" Height="50"/>
+                <Image Name="StateFlagImage" VerticalAlignment="Top" Height="134" HorizontalAlignment="Center"/>
+                <Label Name="StatehoodGrantedOnLabel" FontSize="18" Height="30" Margin="0,25"  
+                           HorizontalAlignment="Center" HorizontalContentAlignment="Center" />
+                <Label x:Name="StatehoodGrantedDateLabel" FontSize="16" HorizontalAlignment="Center" 
+                           Height="40" Width="180" HorizontalContentAlignment="Center"/>
+                <TextBlock x:Name="TravelGumboLinkTextBlock" HorizontalAlignment="Center" 
+                               Margin="11,50" FontSize="14" Foreground="Black" >
+                        <Hyperlink x:Name="StateHyperlink"  RequestNavigate="TGHyperlink_RequestNavigate" NavigateUri=""/>
+                </TextBlock>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <Image Name="BackButton" Grid.Column="0" Grid.Row="1" Visibility="Visible"
+               HorizontalAlignment="Left" MouseDown="BackButton_Click" IsEnabled="True"
+               Margin="5,5,0,0" Height="50" Width="50" VerticalAlignment="Top" Panel.ZIndex="1000"/>
+        
+        <Grid Name="UnitedStatesPolygonGrid" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3" IsEnabled="False">
+            <Polygon Name="WashingtonPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="70,20 67,60 82,65 80,75 155,85 167,35 95,16" Opacity="0"/>
+            <Polygon Name="OregonPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="68,62 82,67 80,75 155,86 162,94 145,115 148,118 138,156 40,132 42,115 47,110" Opacity="0"/>
+            <Polygon Name="CaliforniaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="41,131 30,190 55,275 80,290 96,317 140,325 145,287 85,200 98,146" Opacity="0"/>
+            <Polygon Name="IdahoPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="168,35 156,86 163,94 145,115 148,118 138,160 222,170 229,128 202,123 187,80 177,60 180,37" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="NevadaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="100,147 85,199 145,283 158,268 180,165" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="UtahPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="181,165 162,251 235,263 248,192 220,189 221,170" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="ArizonaPolygon" Stroke="Black" StrokeThickness="3" MouseDown="StateProvPolygon_Clicked"
+                         Fill="Wheat" Points="162,251 156,270 146,265 150,295 135,327 190,359 221,363 237,263" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="ColoradoPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="143,148 240,157 237,228 132,218" Opacity="0" Margin="101,42,-101,-42"/>
+            <Polygon Name="WyomingPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="231,117 280,123 325,127 317,199 218,188" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="NewMexicoPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="325,273 237,263 222,364 235,365 236,358 260,360 261,355 319,361" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="TexasPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="260,360 261,355 319,361 327,282 372,283 370,320 420,335 462,338 462,365 472,380 468,404 433,425 410,450 415,472 385,465 345,402 320,402 305,410" Opacity="0" Margin="-3,0,3,0"/>
+            <Polygon Name="OklahomaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="330,282 372,283 370,320 420,335 460,335 455,275 330,272" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="KansasPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="455,275 347,273 349,220 447,222 455,240" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="NebraskaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="351,220 445,222 430,180 415,170 324,165 322,199 355,203" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="SouthDakotaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="427,175 420,170 325,165 330,111 427,117" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="NorthDakotaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="330,111 370,114 427,115 420,62 335,58" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="MinnesotaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="420,64 430,120 430,159 499,157 499,152 476,135 485,100 518,77 490,75 445,64" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="IowaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="430,160 499,158 503,170 518,185 505,195 498,210 440,211 430,170" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="MissouriPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="440,213 498,211 502,225 522,243 518,253 538,275 530,290 524,290 525,281 457,284 457,238" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="ArkansasPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="468,346 510,345 518,320 532,291 520,292 524,283 457,285 460,310 460,338 465,338" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="LouisianaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="468,346 510,345 515,358 505,382 535,380 539,395 555,415 505,415 472,405 477,380 468,365" Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="MississippiPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="510,345 515,358 505,382 535,380 539,395 560,390 555,360 557,308 " Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="AlabamaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="560,390 555,360 558,307 595,304 608,348 611,372 571,376 571,389" Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="GeorgiaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="595,304 608,340 614,377 660,375 670,367 674,348 640,310 630,305 630,300" Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="FloridaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="618,377 660,375 670,370 703,430 710,450 705,470 690,470 650,430 650,410 630,405 600,400 575,395 575,381 572,378 612,373" Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="SouthCarolinaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="674,346 660,328 640,310 630,305 630,301 645,295 665,294 667,299 687,296 710,309" Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="WisconsinPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="501,155 480,135 480,120 485,110 486,103 505,95 510,105 540,115 550,130 550,171 510,173 505,170" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="MichiganPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="510,105 540,111 548,125 560,130 565,185 612,180 625,150 615,120 580,90 530,80" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="IllinoisPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="513,176 547,173 553,187 559,240 549,270 535,270 520,250 520,240 500,220 518,190 518,180" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="IndianaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="556,189 560,239 553,255 583,250 598,230 593,182 570,184" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="OhioPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="598,230 593,182 630,180 650,170 656,200 650,215 636,230 634,238 625,232 615,235 605,230" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="KentuckyPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="600,230 615,235 632,238 632,240 640,250 642,253 620,271 554,277 553,280 537,282 538,270 550,270 555,260 577,253 585,250" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="TennesseePolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="620,271 554,277 553,280 537,282 525,308 615,300 635,280 650,269" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="NorthCarolinaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="630,301 645,295 665,294 667,299 687,296 710,309 745,280 740,253 700,260 652,268 640,280 620,290 615,301" Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="VirginiaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="740,253 700,260 652,268 628,271 640,255 647,258 670,250 675,230 680,230 695,212 700,212" Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="WestVirginiaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="644,254 647,256 667,250 675,230 675,230 689,216 690,208 685,208 675,219 674,207 658,211 654,211 633,240" Opacity="0" Margin="-5,0,5,0" Cursor=""/>
+            <Polygon Name="PennsylvaniaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="651,170 658,209 725,197 733,191 736,185 728,180 732,165 722,158 661,169 660,165" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="NewYorkPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="732,165 722,158 661,169 660,165 670,150 670,142 702,130 702,121 715,105 735,99 740,120 745,127 750,160 750,170 770,165 775,170 750,180 750,170" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="MainePolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="777,125 765,90 770,85 775,50 780,43 795,43 805,70 820,80 800,95 790,105 785,110" Opacity="0" Margin="-5,0,5,0"/>
+            <Polygon Name="MontanaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="180,37 177,56 190,80 188,100 195,100 205,120 230,125 230,116 323,128 330,58 250,50" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="HawaiiPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="3,382 110,382 110,448 3,448" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="AlaskaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="3,448 110,448 110,383 217,383 283,488 283,524 3,524" Opacity="0" Margin="-1,0,1,0"/>
+        </Grid>
+
+        <Grid Name="NorthAmericaPolygonGrid" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="5" IsEnabled="True" >
+            <Polygon Name="UnitedStatesPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="UnitedStatesCanadaPolygon_Clicked"
+                         Points="190,323 200,326 200,317 250,330 300,335 325,338 350,338 394,335 400,338 430,342 
+                         478,349 502,380 500,395 515,390 543,358 552,340 575,330 579,320 577,310 579,300 590,300 
+                         600,315 610,320 595,350 605,360 585,390 585,435 590,450 555,505 585,550 585,585 560,585 
+                         540,550 530,538 500,538 460,560 430,560 410,590 397,595 378,590 373,575 368,572 363,562 
+                         358,558 350,550 342,550 335,560 325,555 320,550 315,538 300,525 285,525 284,530 258,527 
+                         223,508 223,506 190,504 170,490 155,460 150,430 150,400 155,370 170,340 180,315" 
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="UnitedStatesAlaskaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="UnitedStatesCanadaPolygon_Clicked"
+                         Points="199,75 148,160 155,165 156,182 170,182 174,221 182,230 175,240 160,240 150,230 
+                         145,200 130,170 115,157 0,150 0,100 15,80 30,50 45,20 100,20 120,5 150,5 180,15 190,30
+                         200,45" Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="CanadaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="UnitedStatesCanadaPolygon_Clicked"
+                         Points="190,323 200,326 200,317 250,330 300,335 325,338 350,338 394,335 400,338 430,342 
+                         478,349 502,380 500,395 515,390 543,358 552,340 575,330 579,320 577,310 579,300 590,300 
+                         600,315 610,320 630,340 690,320 690,200 500,70 415,0 300,0 201,72 147,160 155,165 157,182
+                         170,180 175,220 182,229 175,242 150,238 145,270" Opacity="0" Margin="-1,0,1,0"/>
+        </Grid>
+
+        <Grid Name="CanadaPolygonGrid" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="5" IsEnabled="False">
+            <Polygon Name="BritishColumbiaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="73,268 73,286 80,286 88,284 92,286 90,320 88,337 95,350 80,365 60,355 15,340 
+                         15,475 80,467 92,478 102,468 184,500 180,490 182,478 155,420 190,335 155,320 120,300"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="AlbertaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="184,500 180,490 182,478 155,420 190,335 230,350 260,357 220,510"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="SaskatchewanPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="258,358 221,508 260,518 304,524 308,430 316,367"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="ManitobaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="304,524 308,430 316,367 350,370 368,369 370,387 380,387 385,410 400,407 413,412 365,470 365,527"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="OntarioPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="413,412 365,470 365,527 400,538 425,538 470,550 495,570 500,600 500,620 530,610
+                         580,560 580,550 580,540 570,543 565,547 555,548 525,540 507,480 485,460 480,420"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="QuebecPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="580,550 580,540 570,543 565,547 555,548 525,540 507,480 485,460 480,420 
+                         475,310 574,320 600,350 615,375 618,380 600,390 590,400 605,415 620,425 633,425 
+                         630,418 688,387 693,400 680,450 655,472 645,475 635,482 625,488 623,495 625,515 625,530 600,560"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="NewfoundlandPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="574,320 600,350 615,375 618,380 600,390 590,400 605,415 620,425 633,425 630,418 688,387 693,400 690,450 715,460 770,440 790,420 750,380 700,350 650,330 620,320 570,305"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="NewBrunswickPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="655,472 645,475 635,482 625,488 623,495 625,510 635,520 660,523 673,505 675,493 660,483"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="NovaScotiaPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="660,523 673,505 675,495 695,487 700,455 730,475 700,520 690,550 675,546"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="PriceEdwardIslPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="675,493 695,487 697,470 665,480 665,487"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="NunavutPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="316,367 350,370 368,369 500,306 578,306 570,230 440,150 430,70 436,24
+                         420,0 346,0 292,220 258,210 260,215 239,210 231,231 265,280 274,281 279,292 323,308"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="NWTerritoriesPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="346,0 292,220 258,210 260,215 239,210 231,231 265,280 274,281 279,292 323,308
+                         315,366 290,363 258,356 220,346 180,331 165,325 165,310 150,305 155,295 150,275 155,245
+                         150,240 157,230 157,225 155,220 162,209 150,200 166,179 155,155 295,0"
+                         Opacity="0" Margin="-1,0,1,0"/>
+            <Polygon Name="YukonPolygon" Stroke="Black" StrokeThickness="3" Fill="Wheat" MouseDown="StateProvPolygon_Clicked"
+                         Points="165,325 165,310 150,305 155,295 150,275 155,245 150,240 157,230 157,225 155,220
+                         162,209 150,200 166,179 155,155 64,256 80,272 120,300"
+                         Opacity="0" Margin="-1,0,1,0"/>
+
+        </Grid>
+
+    </Grid>
+</Window>
+
